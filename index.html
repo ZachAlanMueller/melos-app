@@ -91,16 +91,16 @@
 
         <div class="fh5co-footer music-player navbar-fixed-bottom">
           <div class="row" style="height:100%">
-            <div class="col-md-3">ALPHA</div>
-            <div class="col-md-6" style="height:100%">
-              <div class="row vertical-align">
-                <div class="col-md-1 text-center" style="padding:0px;">0:00</div>
-                <div class="col-md-2"><i class="fa fa-2x fa-random" aria-hidden="true"></i></div>
-                <div class="col-md-2"><i class="fa fa-2x fa-step-backward" aria-hidden="true"></i></div>
-                <div class="col-md-2"><i class="fa fa-3x fa-play-circle" aria-hidden="true"></i></div>
-                <div class="col-md-2"><i class="fa fa-2x fa-step-forward" aria-hidden="true"></i></div>
-                <div class="col-md-2"><i class="fa fa-2x fa-repeat" aria-hidden="true"></i></div>
-                <div class="col-md-1 text-center" style="padding:0px;">0:00</div>
+            <div class="col-xs-3">ALPHA</div>
+            <div class="col-xs-6" style="height:100%">
+              <div class="row vertical-align" style="padding-top:4px;">
+                <div class="col-sm-1 text-center" style="padding:0px;">0:00</div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-random" aria-hidden="true" style="color:#333;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-step-backward" aria-hidden="true" style="color:#333;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-2x fa-play-circle" id="player-play" aria-hidden="true" style="color:#333;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-step-forward" aria-hidden="true" style="color:#333;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-repeat" aria-hidden="true" style="color:#333;"></i></a></div>
+                <div class="col-sm-1 text-center" style="padding:0px;">0:00</div>
               </div>
               <div class="row" style="">
                 <div class="progress" style="height:4px;">
@@ -108,7 +108,15 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-3">CHARLIE</div>
+            <div class="col-xs-3">
+              <div class="row vertical-align" style="padding-top:4px; width:90%; margin-left:5%">
+                <i class="fa fa-1x fa-volume-up" aria-hidden="true" style="color:#333;"></i>
+                &nbsp
+                <div class="slidecontainer">
+                  <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
     </div>
@@ -129,27 +137,33 @@
   <script src="js/jquery.flexslider-min.js"></script> 
 
   <script>
-    
+    //Sidebar selector
     $('#nav-menu li').click(function(){
       $('#nav-menu li').each(function(){
         $(this).removeClass("fh5co-active");
-
       });
       $(this).addClass("fh5co-active");
     });
+    //Play/Pause Switcher
+    $('#player-play').click(function(){
+      if($(this).hasClass("fa-play-circle")){
+        $(this).removeClass("fa-play-circle");
+        $(this).addClass("fa-pause-circle");
+      }
+      else{
+        $(this).addClass("fa-play-circle");
+        $(this).removeClass("fa-pause-circle");
+      }
+    });
 
-    // function resizeMusicPlayer(){
-    //   var offset = $("#fh5co-aside").width();
-    //   var totalWidth = $(document).width();
-    //   var percent = (1-(offset/totalWidth))*100;
-    //   $(".music-player").css("left", offset);
-    //   $(".music-player").css("width", percent+"%");
-    // };
-    // resizeMusicPlayer();
-    // $(window).resize(function(){
-    //   resizeMusicPlayer();
-    // });
-    
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+    }
   </script>
   <!-- MAIN JS -->
   <script src="js/main.js"></script>

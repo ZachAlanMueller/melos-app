@@ -19,11 +19,11 @@ body {
   color: rgba(0, 0, 0, 0.5);
   background: whitesmoke;
 }
-@media screen and (max-width: 992px) {
+/*@media screen and (max-width: 992px) {
   body {
     font-size: 16px;
   }
-}
+}*/
 
 a {
   color: #228896;
@@ -652,12 +652,12 @@ body.offcanvas #fh5co-main, body.offcanvas .fh5co-nav-toggle {
   float: right;
   margin-right: 0%;
 }
-@media screen and (max-width: 992px) {
+/*@media screen and (max-width: 992px) {
   .fh5co-cards .fh5co-flex-wrap > div {
     width: 100%;
     margin-right: 0;
   }
-}
+}*/
 .fh5co-cards .fh5co-flex-wrap .fh5co-card p:last-child {
   margin-bottom: 0;
 }
@@ -1191,5 +1191,7 @@ body.offcanvas #fh5co-main, body.offcanvas .fh5co-nav-toggle {
     display: flex;
     align-items: center;
 }
+
+
 
 /*# sourceMappingURL=style.css.map */
