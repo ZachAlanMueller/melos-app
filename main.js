@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, dialog, BrowserWindow} = require('electron')
+var fs = require('fs');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -7,7 +8,7 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({minWidth: 540, minHeight: 420})
+  mainWindow = new BrowserWindow({minWidth: 540, minHeight: 420, title: 'Melos'})
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
@@ -16,6 +17,103 @@ function createWindow () {
   mainWindow.webContents.openDevTools()
 
   mainWindow.maximize()
+
+  const {app, Menu} = require('electron')
+
+  var showOpen = function() {
+    dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'], filters: [{ name: 'Music Files', extensions: ['mp4', 'mp3', 'wav', 'm4a'] }]}, 
+      function handleFiles(fileNames){
+        fileNames.forEach(function(file){
+          var simpleName = file.substring(file.lastIndexOf("/") + 1);
+          fs.createReadStream(file).pipe(fs.createWriteStream('./mfiles/'+simpleName));
+        })
+      }
+    );
+  };
+
+
+
+
+
+
+  const template = [
+    {
+      label: 'Edit',
+      submenu: [
+        {role: 'undo'},
+        {role: 'redo'},
+        {type: 'separator'}
+      ]
+    },
+    {
+      label: 'Music',
+      submenu: [
+        {label: 'Add File(s)', click: function(){ showOpen();} }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        {role: 'reload'},
+        {role: 'forcereload'},
+        {role: 'toggledevtools'},
+        {type: 'separator'},
+        {role: 'resetzoom'},
+        {role: 'zoomin'},
+        {role: 'zoomout'},
+        {type: 'separator'},
+        {role: 'togglefullscreen'}
+      ]
+    },
+    {
+      role: 'window',
+      submenu: [
+        {role: 'minimize'},
+        {role: 'close'}
+      ]
+    }
+  ]
+
+  if (process.platform === 'darwin') {
+    template.unshift({
+      label: app.getName(),
+      submenu: [
+        {role: 'about'},
+        {type: 'separator'},
+        {role: 'services', submenu: []},
+        {type: 'separator'},
+        {role: 'hide'},
+        {role: 'hideothers'},
+        {role: 'unhide'},
+        {type: 'separator'},
+        {role: 'quit'}
+      ]
+    })
+
+    // Edit menu
+    template[1].submenu.push(
+      {type: 'separator'},
+      {
+        label: 'Speech',
+        submenu: [
+          {role: 'startspeaking'},
+          {role: 'stopspeaking'}
+        ]
+      }
+    )
+
+    // Window menu
+    template[3].submenu = [
+      {role: 'close'},
+      {role: 'minimize'},
+      {role: 'zoom'},
+      {type: 'separator'},
+      {role: 'front'}
+    ]
+  }
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
