@@ -21,5 +21,9 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^3.0.4"
+  },
+  "dependencies": {
+    "googleapis": "^27.0.0",
+    "jsmediatags": "^3.8.1"
   }
 }

@@ -36,7 +36,7 @@
 
 
   </head>
-  <body>
+  <body">
   <div id="fh5co-page">
     <a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>
     <aside id="fh5co-aside" role="complementary" class="border js-fullheight">
@@ -64,13 +64,24 @@
 
     </aside>
 
-    <div id="fh5co-main">
-      <aside id="fh5co-hero" class="js-fullheight">
-        <div class="flexslider js-fullheight">
-          <div class="overlay">
-            <div class="container-fluid">
+    <div id="fh5co-main" class="library-main">
+      <aside id="fh5co-hero">
+        <div class="flexslider">
+          <div class="container-fluid">
+            <div class="row" style="display:flex;">
+              <div class="col-sm-5">
+                <img id="library-currently-selected-image" src="images/v.jpg" width="100%" height="" style="border:5px; border-style:solid; margin-top:10px;">
+              </div>
+              <div class="col-sm-7" style="align-self:flex-end">
+                <h2 id="library-currently-selected-artist">Artist</h2>
+                <h4 id="library-currently-selected-song">Song name</h4>
+              </div>
+            </div>
+            <hr>
+            <div id="library-holder" class="container-fluid">
               
             </div>
+            <br><br><br>
           </div>
         </div>
       </aside>
@@ -124,18 +135,66 @@
 
   <!-- Selector Library Scripts -->
   <script>
+    const fs = require('fs');
+    const mm = require('music-metadata');
+    const util = require('util');
+    //var jsmediatags = require("jsmediatags");
+
     function updateLibrary(){
       fs.readdir('./mfiles', (err, files) => {
         'use strict';
         //if an error is thrown when reading the directory, we throw it. Otherwise we continue
         if (err) throw  err;
+        $('#library-holder').empty();
         //the files parameter is an array of the files and folders in the path we passed. So we loop through the array, printing each file and folder
         for (let file of files) {
-          console.log(file);
+          var fileExt = file.split('.').pop();
+          if(fileExt == 'mp4' || fileExt == 'mp3' || fileExt == 'wav' || fileExt == 'm4a'){
+            //console.log(file);
+
+            // jsmediatags.read("mfiles/"+file, {
+            //   onSuccess: function(tag) {
+            //     console.log(tag);
+            //   },
+            //   onError: function(error) {
+            //     console.log(error);
+            //   }
+            // });
+
+            mm.parseFile('mfiles/'+file, {native: true})
+            .then( metadata => {
+              //console.log(metadata);
+
+              console.log(metadata.common.picture[0].data);
+
+              $('#library-currently-selected-image').attr('src', 'data:'+metadata.common.picture[0].format+';base64,'+metadata.common.picture[0].data.toString('base64'));
+              //console.log(util.inspect(metadata, { showHidden: false, depth: null }));
+              $("#library-holder").append(`<div class="row" style="display:flex;">
+                    <div class="col-sm-4">
+                      <h4 style="margin-bottom: 10px;">`+metadata.common.title+`</h4>
+                      <h6 style="margin-bottom: 10px;">`+metadata.common.artists[0]+`</h6>
+                    </div>
+                    <div class="col-sm-4" style="align-self:flex-end">
+                      <h6 style="margin-bottom: 10px;">`+metadata.common.album+`</h6>
+                    </div>
+                    <div class="col-sm-4" style="align-self:flex-end;">
+                      <h6 class="pull-right" style="margin-bottom: 10px;">`+Math.ceil(metadata.format.duration/60)+":"+pad2(Math.ceil(metadata.format.duration % 60))+`</h6>
+                    </div>
+                  </div>`);
+            })
+            .catch( err => {
+              console.error(err.message);
+            });
+            
+          }
+          
         }
-        console.log('dingo');
+        //$("#library-holder").append('<br><br><br>');
+        //console.log('dingo');
       });
     }
+
+    updateLibrary();
   </script>
 
 
@@ -143,11 +202,8 @@
 
   <script>
 
-    const fs = require('fs');
-
     //Sidebar selector
     var currentlySelected = 'selector-library';
-    updateLibrary();
 
 
     $('#nav-menu li').click(function(){
@@ -173,6 +229,10 @@
     // Update the current slider value (each time you drag the slider handle)
     $("#volume-slider").oninput = function() {
       //Stuff to do when volume slider changes
+    }
+
+    function pad2(number) { 
+      return (number < 10 ? '0' : '') + number
     }
   </script>
   
