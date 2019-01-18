@@ -73,13 +73,15 @@
                 <img id="library-currently-selected-image" src="images/v.jpg" width="100%" height="" style="border:5px; border-style:solid; margin-top:10px;">
               </div>
               <div class="col-sm-7" style="align-self:flex-end">
-                <h2 id="library-currently-selected-artist">Artist</h2>
-                <h4 id="library-currently-selected-song">Song name</h4>
+                <h2 id="library-currently-selected-song">Song</h2>
+                <h4 id="library-currently-selected-artist">Artist</h4>
               </div>
             </div>
             <hr>
             <div id="library-holder" class="container-fluid">
-              
+              <!--  -->
+
+              <!--  -->
             </div>
             <br><br><br>
           </div>
@@ -92,11 +94,11 @@
             <div class="col-xs-6" style="height:100%">
               <div class="row vertical-align" style="padding-top:4px;">
                 <div class="col-sm-1 text-center" style="padding:0px;">0:00</div>
-                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-random" aria-hidden="true" style="color:#333;"></i></a></div>
-                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-step-backward" aria-hidden="true" style="color:#333;"></i></a></div>
-                <div class="col-sm-2"><a href="#"><i class="fa fa-2x fa-play-circle" id="player-play" aria-hidden="true" style="color:#333;"></i></a></div>
-                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-step-forward" aria-hidden="true" style="color:#333;"></i></a></div>
-                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-repeat" aria-hidden="true" style="color:#333;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-random" aria-hidden="true" style="color:#A2BCE8;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-step-backward" aria-hidden="true" style="color:#A2BCE8;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-2x fa-play-circle" id="player-play" aria-hidden="true" style="color:#A2BCE8;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-step-forward" aria-hidden="true" style="color:#A2BCE8;"></i></a></div>
+                <div class="col-sm-2"><a href="#"><i class="fa fa-1x fa-repeat" aria-hidden="true" style="color:#A2BCE8;"></i></a></div>
                 <div class="col-sm-1 text-center" style="padding:0px;">0:00</div>
               </div>
               <div class="row" style="">
@@ -150,37 +152,44 @@
         for (let file of files) {
           var fileExt = file.split('.').pop();
           if(fileExt == 'mp4' || fileExt == 'mp3' || fileExt == 'wav' || fileExt == 'm4a'){
-            //console.log(file);
-
-            // jsmediatags.read("mfiles/"+file, {
-            //   onSuccess: function(tag) {
-            //     console.log(tag);
-            //   },
-            //   onError: function(error) {
-            //     console.log(error);
-            //   }
-            // });
 
             mm.parseFile('mfiles/'+file, {native: true})
             .then( metadata => {
-              //console.log(metadata);
+              console.log(metadata);
 
-              console.log(metadata.common.picture[0].data);
+              //console.log(metadata.common.picture[0].data);
 
-              $('#library-currently-selected-image').attr('src', 'data:'+metadata.common.picture[0].format+';base64,'+metadata.common.picture[0].data.toString('base64'));
-              //console.log(util.inspect(metadata, { showHidden: false, depth: null }));
-              $("#library-holder").append(`<div class="row" style="display:flex;">
-                    <div class="col-sm-4">
-                      <h4 style="margin-bottom: 10px;">`+metadata.common.title+`</h4>
-                      <h6 style="margin-bottom: 10px;">`+metadata.common.artists[0]+`</h6>
+              //$('#library-currently-selected-image').attr('src', 'data:'+metadata.common.picture[0].format+';base64,'+metadata.common.picture[0].data.toString('base64'));
+              $("#library-holder").append(`<div class="fh5co-feature animate-box fadeInLeft animated song-strip" data-animate-effect="fadeInLeft">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <img class="song-image" height=80 src="data:`+metadata.common.picture[0].format+`;base64,`+metadata.common.picture[0].data.toString('base64')+`" style="border-radius:5px;"></i>
+                  </div>
+                  <div class="col-sm-10">
+                    <div class="fh5co-text" style="padding-left:6px;">
+                      <div class="row">
+                        <div class="col-sm-10">
+                          <h3 class="song-title">`+metadata.common.title+`</h3>
+                        </div>
+                        <div class="col-sm-2">
+                          <a href="#"><i class="fa fa-1x fa-ellipsis-h" aria-hidden="true" style="color:#173753;"></i></a>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-5 song-artist">
+                          `+metadata.common.artists[0]+`
+                        </div>
+                        <div class="col-sm-5 song-album">
+                          `+metadata.common.album+`
+                        </div>
+                        <div class="col-sm-2">
+                          `+Math.floor(metadata.format.duration/60)+":"+pad2(Math.ceil(metadata.format.duration % 60))+`
+                        </div>
+                      </div>
                     </div>
-                    <div class="col-sm-4" style="align-self:flex-end">
-                      <h6 style="margin-bottom: 10px;">`+metadata.common.album+`</h6>
-                    </div>
-                    <div class="col-sm-4" style="align-self:flex-end;">
-                      <h6 class="pull-right" style="margin-bottom: 10px;">`+Math.ceil(metadata.format.duration/60)+":"+pad2(Math.ceil(metadata.format.duration % 60))+`</h6>
-                    </div>
-                  </div>`);
+                  </div>
+                </div>
+              </div>`);
             })
             .catch( err => {
               console.error(err.message);
@@ -195,6 +204,19 @@
     }
 
     updateLibrary();
+
+    $(document).ready(function() {
+      $('body').on('click', '.song-strip', function (){
+        $('.selected').removeClass('selected');
+        $(this).addClass('selected');
+        $('#library-currently-selected-song').html($(this).find('.song-title').html());
+        $('#library-currently-selected-artist').html($(this).find('.song-artist').html());
+        $('#library-currently-selected-image').removeAttr('src');
+        $('#library-currently-selected-image').attr('src', $(this).find('.song-image').attr('src'));
+
+        
+      });
+    });
   </script>
 
 
